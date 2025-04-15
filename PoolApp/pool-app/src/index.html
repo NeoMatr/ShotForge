@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Pool Challenge App</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <!-- Loading Screen -->
+  <div id="loading-screen">
+    <div class="loading-content">
+      <div class="loading-spinner"></div>
+      <h2>Loading Pool Challenge App...</h2>
+    </div>
+  </div>
+  
+  <!-- Debug panel for development -->
+  <div id="debug-info"></div>
+  
+  <!-- Main app container -->
+  <div id="app"></div>
+  
+  <!-- Scripts -->
+  <script src="firebase-config.js"></script>
+  <script src="utils/challenges.js"></script>
+  <script src="utils/storage.js"></script>
+  <script src="utils/user.js"></script>
+  <script src="utils/achievements.js"></script>
+  <script src="app.js"></script>
+</body>
+</html> 

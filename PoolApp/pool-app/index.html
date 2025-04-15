@@ -1,0 +1,175 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ShotForge - Billiards Training App</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;500;600;700&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="src/styles.css">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><circle cx=%2250%22 cy=%2250%22 r=%2245%22 fill=%22%231974D2%22 /><circle cx=%2250%22 cy=%2250%22 r=%2230%22 fill=%22white%22 /><text x=%2250%22 y=%2255%22 font-size=%2220%22 text-anchor=%22middle%22 dominant-baseline=%22middle%22 font-family=%22Arial%22 font-weight=%22bold%22>SF</text></svg>" type="image/svg+xml">
+    <link rel="manifest" href="manifest.json">
+    <meta name="theme-color" content="#3498db">
+    <style>
+        .loading-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #ecf0f1;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        .loading-logo {
+            width: 120px;
+            height: 120px;
+            background-color: #3498db;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 20px;
+            position: relative;
+            overflow: hidden;
+        }
+        .loading-logo::after {
+            content: "8";
+            font-size: 60px;
+            font-weight: bold;
+            color: white;
+        }
+        .loading-logo::before {
+            content: "";
+            position: absolute;
+            width: 80px;
+            height: 80px;
+            background-color: white;
+            border-radius: 50%;
+            z-index: 0;
+        }
+        .loading-text {
+            font-size: 24px;
+            color: #2c3e50;
+            margin-bottom: 20px;
+        }
+        .loading-spinner {
+            width: 50px;
+            height: 50px;
+            border: 5px solid rgba(52, 152, 219, 0.3);
+            border-radius: 50%;
+            border-top-color: #3498db;
+            animation: spin 1s linear infinite;
+        }
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+        .local-storage-notice {
+            background-color: #ffe082;
+            color: #5d4037;
+            padding: 10px;
+            text-align: center;
+            font-size: 12px;
+            border-radius: 5px;
+            margin: 10px 0;
+            max-width: 400px;
+        }
+        .debug-info {
+            margin-top: 20px;
+            padding: 10px;
+            background-color: #f8f9fa;
+            border: 1px solid #dee2e6;
+            border-radius: 4px;
+            font-size: 12px;
+            max-width: 400px;
+            max-height: 100px;
+            overflow-y: auto;
+            color: #666;
+        }
+    </style>
+</head>
+<body>
+    <div id="app">
+        <!-- Initial loading state that will show while JS loads -->
+        <div class="loading-container">
+            <div class="loading-logo"></div>
+            <h1 class="loading-text">ShotForge</h1>
+            <p>Daily challenges for pool players</p>
+            <div class="loading-spinner"></div>
+            <div class="local-storage-notice">
+                This app uses your browser's local storage to save data instead of a server.
+                <br>Clearing your browser data will delete your progress.
+            </div>
+            <div id="debug-info" class="debug-info">Waiting for scripts to load...</div>
+        </div>
+    </div>
+    
+    <!-- Debug Script -->
+    <script>
+        // Add debug info
+        const debugInfo = document.getElementById('debug-info');
+        function addDebug(message) {
+            if (debugInfo) {
+                debugInfo.innerHTML += '<br>' + message;
+                console.log(message);
+            }
+        }
+        window.addEventListener('error', function(e) {
+            addDebug('ERROR: ' + e.message + ' at ' + e.filename + ':' + e.lineno);
+        });
+        addDebug('Debug initialized');
+    </script>
+    
+    <!-- LocalStorage Implementation (replaces Firebase) -->
+    <script src="src/firebase-config.js"></script>
+    
+    <!-- Utility Scripts -->
+    <script src="src/utils/challenges.js"></script>
+    <script src="src/utils/user.js"></script>
+    <script src="src/utils/storage.js"></script>
+    
+    <!-- Main App Script - Removed type="module" -->
+    <script src="src/app.js"></script>
+    
+    <!-- Service Worker Registration -->
+    <script>
+        addDebug('About to register service worker');
+        if ('serviceWorker' in navigator) {
+            window.addEventListener('load', () => {
+                navigator.serviceWorker.register('service-worker.js')
+                    .then(registration => {
+                        addDebug('Service Worker registered with scope: ' + registration.scope);
+                    })
+                    .catch(error => {
+                        addDebug('Service Worker registration failed: ' + error);
+                    });
+            });
+        } else {
+            addDebug('Service workers not supported');
+        }
+        
+        // Final check
+        window.addEventListener('load', function() {
+            addDebug('Window load complete');
+            setTimeout(function() {
+                if (document.querySelector('.loading-container')) {
+                    addDebug('Still showing loading screen after 3s');
+                    // Try to manually initialize
+                    if (typeof renderPage === 'function') {
+                        addDebug('Trying manual renderPage()');
+                        try {
+                            renderPage();
+                        } catch(e) {
+                            addDebug('Manual render failed: ' + e.message);
+                        }
+                    } else {
+                        addDebug('renderPage function not found');
+                    }
+                } else {
+                    addDebug('App loaded successfully!');
+                }
+            }, 3000);
+        });
+    </script>
+</body>
+</html> 
