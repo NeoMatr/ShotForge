@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pool App Test</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        .result {
+            margin-top: 10px;
+            padding: 10px;
+            border: 1px solid #ccc;
+            background-color: #f9f9f9;
+        }
+    </style>
+</head>
+<body>
+    <h1>Pool App Script Test</h1>
+    <p>This page will test if scripts are loading correctly.</p>
+    
+    <div id="result1" class="result">Testing...</div>
+    <div id="result2" class="result">Testing...</div>
+    <div id="result3" class="result">Testing...</div>
+    <div id="result4" class="result">Testing...</div>
+    
+    <script>
+        // Test basic JavaScript
+        document.getElementById('result1').textContent = 'Basic JavaScript works!';
+        
+        // Test script loading
+        window.addEventListener('load', function() {
+            document.getElementById('result2').textContent = 'Window load event fired!';
+        });
+        
+        // Test for errors
+        window.addEventListener('error', function(e) {
+            console.error('Script error detected:', e);
+            document.getElementById('result3').textContent = 'Error detected: ' + e.message;
+        });
+        
+        // Add button to test real app scripts
+        const button = document.createElement('button');
+        button.textContent = 'Test App Scripts';
+        button.onclick = function() {
+            try {
+                // Create script elements
+                const scripts = [
+                    'src/firebase-config.js',
+                    'src/utils/challenges.js',
+                    'src/utils/user.js',
+                    'src/utils/storage.js',
+                    'src/app.js'
+                ];
+                
+                let loaded = 0;
+                
+                scripts.forEach(function(src) {
+                    const script = document.createElement('script');
+                    script.src = src;
+                    script.onload = function() {
+                        loaded++;
+                        document.getElementById('result4').textContent = 
+                            'Loaded ' + loaded + '/' + scripts.length + ' scripts: ' + src + ' loaded successfully';
+                        
+                        if (loaded === scripts.length) {
+                            document.getElementById('result4').textContent += ' - All scripts loaded!';
+                        }
+                    };
+                    script.onerror = function() {
+                        document.getElementById('result4').textContent = 'Failed to load: ' + src;
+                    };
+                    document.body.appendChild(script);
+                });
+            } catch (err) {
+                document.getElementById('result4').textContent = 'Error: ' + err.message;
+            }
+        };
+        document.body.appendChild(button);
+    </script>
+</body>
+</html> 
